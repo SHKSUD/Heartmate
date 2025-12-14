@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>HeartMate | Medical Insights & Wellness Blog</title>
+    <meta name="description" content="Trusted, clinician-reviewed articles on Obesity, Diabetes, and Cardiac health.">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="HeartMate Medical Repository">
+    <meta property="og:image" content="https://placehold.co/1200x630/0f766e/ffffff?text=HeartMate">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: { 600: '#0284c7', 800: '#075985' },
+                        ad: { 50: '#f8fafc', 100: '#f1f5f9' } // Subtle backgrounds for ads
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "HeartMate",
+      "url": "https://www.heartmate-app.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.heartmate-app.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <style>
+        /* Ad Placeholder Styling - Remove dashed lines when live */
+        .ad-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        /* Sticky Sidebar for higher ad viewability */
+        .sticky-sidebar {
+            position: sticky;
+            top: 2rem;
+        }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <div class="ad-placeholder h-24 w-full rounded-lg">
+            <span>Advertisement (Leaderboard 728x90)</span>
+        </div>
+    </div>
+
+    <header class="border-b border-gray-100 bg-white sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="app.goHome()">
+                <svg class="h-8 w-8 text-medical-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <h1 class="font-bold text-2xl tracking-tight text-slate-900">HeartMate</h1>
+            </div>
+
+            <div class="hidden md:block flex-1 max-w-md mx-8">
+                <input type="text" id="search-input" placeholder="Search medical topics..." 
+                       class="w-full border-gray-300 border rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-medical-600 focus:border-transparent outline-none"
+                       oninput="app.handleSearch(this.value)">
+            </div>
+
+            <div class="flex items-center gap-3">
+                <select id="role-select" onchange="app.setRole(this.value)" class="text-xs border-gray-200 rounded p-1 bg-gray-50">
+                    <option value="reader">Reader View</option>
+                    <option value="author">Author Mode</option>
+                    <option value="reviewer">Reviewer Mode</option>
+                </select>
+                <button class="bg-medical-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-medical-800 transition">Sign In</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-amber-50 border-b border-amber-100 text-amber-900 text-xs py-2 text-center px-4">
+        <strong>Medical Disclaimer:</strong> Content is for informational purposes only. Consult a healthcare professional for advice.
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <main class="lg:col-span-8" id="main-content">
+                
+                <nav class="flex gap-2 overflow-x-auto pb-4 mb-6 border-b border-gray-100" id="topic-nav">
+                    </nav>
+
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-900" id="page-heading">Latest Articles</h2>
+                    <div class="flex gap-2" id="action-buttons">
+                        </div>
+                </div>
+
+                <div id="posts-feed" class="space-y-8">
+                    </div>
+
+                <div class="py-8 border-t border-gray-100 mt-8 flex justify-center gap-2" id="pagination">
+                    </div>
+
+            </main>
+
+            <aside class="lg:col-span-4 space-y-8">
+                
+                <div class="block md:hidden">
+                    <input type="text" placeholder="Search..." class="w-full border p-2 rounded" oninput="app.handleSearch(this.value)">
+                </div>
+
+                <div class="ad-placeholder h-96 w-full rounded-lg bg-slate-50 border border-slate-200 sticky-sidebar">
+                    <div class="text-center p-4">
+                        <span class="block font-bold text-slate-400 mb-2">Advertisement</span>
+                        <span class="text-xs text-slate-400">(Sidebar Skyscraper 300x600)</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-lg mb-2">About HeartMate</h3>
+                    <p class="text-sm text-gray-600 mb-4">
+                        A dedicated repository for clinician-reviewed knowledge on obesity, diabetes, and heart health.
+                    </p>
+                    <a href="#" class="text-medical-600 text-sm font-medium hover:underline">Read Privacy Policy</a>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <div id="article-view" class="fixed inset-0 z-50 bg-white hidden overflow-y-auto">
+        <div class="fixed top-0 left-0 h-1 bg-medical-600 z-50 transition-all duration-300" id="read-progress" style="width: 0%"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 py-8 relative min-h-screen">
+            <button onclick="app.closeArticle()" class="mb-6 flex items-center text-gray-500 hover:text-medical-600 transition">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Feed
+            </button>
+
+            <article id="article-detail-content" class="prose prose-lg max-w-none text-slate-700">
+                </article>
+
+            <div class="mt-12 py-8 border-t border-gray-100">
+                <div class="ad-placeholder h-64 w-full rounded-lg">
+                    <span>Advertisement (Related Content / 300x250 Grid)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="fixed inset-0 z-50 bg-black/50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Add / Edit Article</h2>
+            <form id="edit-form" class="space-y-4" onsubmit="event.preventDefault(); app.savePost();">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="edit-title" placeholder="Article Title" class="w-full border p-2 rounded" required>
+                <select id="edit-topic" class="w-full border p-2 rounded">
+                    <option value="Obesity">Obesity</option>
+                    <option value="Diabetes">Diabetes</option>
+                    <option value="Cardiac">Cardiac</option>
+                    <option value="Wellness">Wellness</option>
+                </select>
+                <textarea id="edit-summary" placeholder="Short Summary (SEO Description)" class="w-full border p-2 rounded h-20" required></textarea>
+                <textarea id="edit-content" placeholder="Full Content (HTML allowed)" class="w-full border p-2 rounded h-40" required></textarea>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 border rounded">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-medical-600 text-white rounded">Save Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* ================================================================
+           APP CONFIG & DATA
+           ================================================================
+        */
+        const APP_CONFIG = {
+            ads: {
+                enabled: true,
+                frequency: 3 // Inject an ad after every 3rd post
+            },
+            strings: {
+                disclaimer: "Disclaimer: Not medical advice.",
+            }
+        };
+
+        // SEEDED POSTS (Realistic Content for AdSense Approval)
+        const SEED_POSTS = [
+            {
+                id: '1', topic: 'Obesity', title: 'Understanding BMI: Myths and Realities', author: 'Dr. A. Khan', date: '2023-10-15',
+                summary: 'Body Mass Index is a screening tool, not a diagnosis. We explore the limitations of BMI.',
+                content: '<p>Body Mass Index (BMI) is a simple calculation using a person\'s height and weight. The formula is BMI = kg/m2 where kg is a person\'s weight in kilograms and m2 is their height in metres squared.</p><h3>The Limitations</h3><p>BMI does not measure body fat directly...</p>',
+                tags: ['bmi', 'health'], reviewed: true
+            },
+            {
+                id: '2', topic: 'Diabetes', title: 'The GLP-1 Agonist Revolution', author: 'Dr. P. Sharma', date: '2023-11-01',
+                summary: 'How modern medications like Semaglutide are changing diabetes management.',
+                content: '<p>GLP-1 agonists work by mimicking the action of a naturally occurring hormone...</p>',
+                tags: ['medication', 'diabetes'], reviewed: true
+            },
+            {
+                id: '3', topic: 'Cardiac', title: 'Silent Ischemia: The Hidden Risk', author: 'Dr. E. Rossi', date: '2023-11-15',
+                summary: 'Heart issues without chest pain? Understanding the symptoms of silent ischemia.',
+                content: '<p>Silent ischemia is a condition where the heart is deprived of oxygen but no pain is felt...</p>',
+                tags: ['heart', 'symptoms'], reviewed: true
+            },
+            {
+                id: '4', topic: 'Wellness', title: 'Sleep Hygiene 101', author: 'Prof. M. Santos', date: '2023-09-10',
+                summary: 'Why 8 hours might not be enough if the quality is poor.',
+                content: '<p>Sleep hygiene refers to the behavioral and environmental practice developed in the late 1970s...</p>',
+                tags: ['sleep', 'lifestyle'], reviewed: true
+            },
+            {
+                id: '5', topic: 'Obesity', title: 'Childhood Obesity Prevention', author: 'Prof. M. Santos', date: '2023-09-20',
+                summary: 'Family-based interventions that actually work.',
+                content: '<p>Preventing obesity in children requires a multi-faceted approach involving school, home, and community...</p>',
+                tags: ['family', 'prevention'], reviewed: true
+            },
+            {
+                id: '6', topic: 'Diabetes', title: 'Insulin Resistance Explained', author: 'Dr. A. Khan', date: '2023-12-05',
+                summary: 'The root cause of Type 2 Diabetes explained simply.',
+                content: '<p>Insulin resistance is when cells in your muscles, fat, and liver don\'t respond well to insulin...</p>',
+                tags: ['insulin', 'metabolism'], reviewed: true
+            },
+            {
+                id: '7', topic: 'Cardiac', title: 'Hypertension Guidelines 2024', author: 'Dr. E. Rossi', date: '2024-01-05',
+                summary: 'New blood pressure targets for high-risk patients.',
+                content: '<p>The new guidelines suggest initiating treatment earlier for patients with comorbidities...</p>',
+                tags: ['bp', 'guidelines'], reviewed: true
+            },
+            {
+                id: '8', topic: 'Wellness', title: 'Stress and Cortisol', author: 'Dr. P. Sharma', date: '2023-11-20',
+                summary: 'How chronic stress impacts your physical heart health.',
+                content: '<p>Cortisol, the stress hormone, can increase blood sugar and blood pressure when chronically elevated...</p>',
+                tags: ['stress', 'mental-health'], reviewed: true
+            },
+            {
+                id: '9', topic: 'Obesity', title: 'Visceral Fat vs Subcutaneous Fat', author: 'Dr. A. Khan', date: '2023-10-25',
+                summary: 'Why belly fat is more dangerous than hip fat.',
+                content: '<p>Visceral fat is stored within the abdominal cavity and wraps around important internal organs...</p>',
+                tags: ['fat', 'anatomy'], reviewed: true
+            },
+            {
+                id: '10', topic: 'Diabetes', title: 'CGM Technology', author: 'Dr. P. Sharma', date: '2023-12-12',
+                summary: 'Continuous Glucose Monitors: Are they for everyone?',
+                content: '<p>CGMs provide real-time feedback on how food affects blood sugar...</p>',
+                tags: ['tech', 'bloodsugar'], reviewed: true
+            },
+            {
+                id: '11', topic: 'Cardiac', title: 'Lipoprotein(a) Risks', author: 'Dr. E. Rossi', date: '2023-11-30',
+                summary: 'The genetic cholesterol risk factor standard tests miss.',
+                content: '<p>Lp(a) is a sticky cholesterol particle that is largely genetically determined...</p>',
+                tags: ['genetics', 'cholesterol'], reviewed: true
+            },
+            {
+                id: '12', topic: 'Wellness', title: 'Plant-Based Dieting', author: 'Prof. M. Santos', date: '2023-10-01',
+                summary: 'Transitioning to plants without losing muscle mass.',
+                content: '<p>Plant-based diets are associated with lower risk of cardiovascular disease...</p>',
+                tags: ['diet', 'nutrition'], reviewed: true
+            }
+        ];
+
+        /* ================================================================
+           APPLICATION LOGIC
+           ================================================================
+        */
+        const app = {
+            state: {
+                role: 'reader',
+                currentTopic: 'All',
+                posts: [],
+                search: ''
+            },
+
+            init() {
+                // Load data from LocalStorage or seed it
+                const stored = localStorage.getItem('heartmate_posts');
+                if (stored) {
+                    this.state.posts = JSON.parse(stored);
+                } else {
+                    this.state.posts = SEED_POSTS;
+                    localStorage.setItem('heartmate_posts', JSON.stringify(SEED_POSTS));
+                }
+                
+                this.renderNav();
+                this.renderFeed();
+            },
+
+            // --- NAVIGATION & FILTERS ---
+            renderNav() {
+                const topics = ['All', 'Obesity', 'Diabetes', 'Cardiac', 'Wellness'];
+                const nav = document.getElementById('topic-nav');
+                nav.innerHTML = topics.map(t => `
+                    <button onclick="app.setTopic('${t}')" 
+                        class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition
+                        ${this.state.currentTopic === t ? 'bg-medical-600 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+                        ${t}
+                    </button>
+                `).join('');
+            },
+
+            setTopic(t) {
+                this.state.currentTopic = t;
+                this.renderFeed();
+            },
+
+            handleSearch(query) {
+                this.state.search = query.toLowerCase();
+                this.renderFeed();
+            },
+
+            setRole(role) {
+                this.state.role = role;
+                const btnContainer = document.getElementById('action-buttons');
+                if (role === 'author' || role === 'reviewer') {
+                    btnContainer.innerHTML = `<button onclick="app.openEditModal()" class="bg-medical-800 text-white px-3 py-1 rounded text-sm">+ New Post</button>`;
+                } else {
+                    btnContainer.innerHTML = '';
+                }
+                this.renderFeed();
+            },
+
+            // --- FEED RENDERING (With Ad Injection) ---
+            renderFeed() {
+                const feed = document.getElementById('posts-feed');
+                
+                // Filter
+                let filtered = this.state.posts.filter(p => {
+                    const matchTopic = this.state.currentTopic === 'All' || p.topic === this.state.currentTopic;
+                    const matchSearch = p.title.toLowerCase().includes(this.state.search) || p.summary.toLowerCase().includes(this.state.search);
+                    return matchTopic && matchSearch;
+                });
+
+                if (filtered.length === 0) {
+                    feed.innerHTML = `<div class="text-center py-12 text-gray-500">No articles found.</div>`;
+                    return;
+                }
+
+                // Map to HTML with Ad Injection
+                let html = '';
+                filtered.forEach((post, index) => {
+                    // 1. Render Post Card
+                    html += `
+                        <article class="flex flex-col md:flex-row gap-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-medical-600 transition group cursor-pointer" onclick="app.openArticle('${post.id}')">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-xs font-bold uppercase text-medical-600 tracking-wider">${post.topic}</span>
+                                    <span class="text-xs text-gray-400">&bull; ${post.date}</span>
+                                    ${post.reviewed ? '<span class="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">Reviewed</span>' : ''}
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-medical-600">${post.title}</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">${post.summary}</p>
+                                <div class="mt-4 flex items-center gap-2 text-xs font-medium text-gray-500">
+                                    <span>By ${post.author}</span>
+                                </div>
+                            </div>
+                        </article>
+                    `;
+
+                    // 2. Inject In-Feed Ad after every 3rd post
+                    if (APP_CONFIG.ads.enabled && (index + 1) % APP_CONFIG.ads.frequency === 0 && index !== filtered.length - 1) {
+                        html += `
+                            <div class="ad-placeholder h-32 w-full rounded-lg bg-ad-50 border border-ad-200">
+                                <div class="text-center">
+                                    <span class="block font-bold text-gray-400 mb-1">Sponsored</span>
+                                    <span class="text-xs text-gray-400">(Native In-Feed Ad)</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                feed.innerHTML = html;
+            },
+
+            // --- ARTICLE DETAIL (SEO Logic) ---
+            openArticle(id) {
+                const post = this.state.posts.find(p => p.id === id);
+                if (!post) return;
+
+                // 1. Update UI
+                const container = document.getElementById('article-detail-content');
+                container.innerHTML = `
+                    <div class="mb-6 border-b pb-6">
+                        <span class="text-medical-600 font-bold tracking-wide uppercase text-sm">${post.topic}</span>
+                        <h1 class="text-4xl font-extrabold text-gray-900 mt-2 mb-4">${post.title}</h1>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span>By <strong>${post.author}</strong></span>
+                            <span>${post.date}</span>
+                            ${post.reviewed ? '<span class="flex items-center text-green-600"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Clinician Reviewed</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="text-lg leading-relaxed space-y-4">
+                        ${post.content}
+                    </div>
+                `;
+
+                // 2. UPDATE SEO TAGS (Crucial for Client-Side Routing)
+                document.title = `${post.title} | HeartMate`;
+                document.querySelector('meta[name="description"]').setAttribute("content", post.summary);
+                
+                // 3. Inject JSON-LD
+                this.injectSchema(post);
+
+                // 4. Show View
+                document.getElementById('article-view').classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            },
+
+            closeArticle() {
+                document.getElementById('article-view').classList.add('hidden');
+                document.body.style.overflow = '';
+                // Reset SEO tags
+                document.title = "HeartMate | Medical Insights & Wellness Blog";
+                document.querySelector('meta[name="description"]').setAttribute("content", "Trusted, clinician-reviewed articles.");
+            },
+
+            injectSchema(post) {
+                const scriptId = 'dynamic-jsonld';
+                let oldScript = document.getElementById(scriptId);
+                if (oldScript) oldScript.remove();
+
+                const script = document.createElement('script');
+                script.id = scriptId;
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Article",
+                    "headline": post.title,
+                    "datePublished": post.date,
+                    "author": { "@type": "Person", "name": post.author },
+                    "description": post.summary
+                });
+                document.head.appendChild(script);
+            },
+
+            goHome() {
+                this.closeArticle();
+                this.state.search = '';
+                document.getElementById('search-input').value = '';
+                this.setTopic('All');
+            },
+
+            // --- EDITING ---
+            openEditModal() {
+                document.getElementById('edit-form').reset();
+                document.getElementById('edit-id').value = '';
+                document.getElementById('edit-modal').classList.remove('hidden');
+            },
+
+            savePost() {
+                const id = document.getElementById('edit-id').value;
+                const newPost = {
+                    id: id || Date.now().toString(),
+                    title: document.getElementById('edit-title').value,
+                    topic: document.getElementById('edit-topic').value,
+                    summary: document.getElementById('edit-summary').value,
+                    content: document.getElementById('edit-content').value,
+                    author: "Current Author",
+                    date: new Date().toISOString().split('T')[0],
+                    reviewed: false
+                };
+
+                if (id) {
+                    const idx = this.state.posts.findIndex(p => p.id === id);
+                    this.state.posts[idx] = newPost;
+                } else {
+                    this.state.posts.unshift(newPost);
+                }
+
+                localStorage.setItem('heartmate_posts', JSON.stringify(this.state.posts));
+                document.getElementById('edit-modal').classList.add('hidden');
+                this.renderFeed();
+            }
+        };
+
+        // Scroll Progress Bar for Reader Engagement
+        document.getElementById('article-view').addEventListener('scroll', function() {
+            const scrollTop = this.scrollTop;
+            const scrollHeight = this.scrollHeight - this.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('read-progress').style.width = progress + '%';
+        });
+
+        // Initialize
+        app.init();
+    </script>
+</body>
+</html>
